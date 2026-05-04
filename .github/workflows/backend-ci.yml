@@ -1,0 +1,34 @@
+name: CineMind AI CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          pip install fastapi uvicorn transformers torch pydantic
+
+      - name: Verify Backend Imports
+        run: |
+          python -c "from backend.services.review_service import analyze_review"
+
+      - name: Build Docker Image
+        run: |
+          docker build -t cinemind-ai ./backend
